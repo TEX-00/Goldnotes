@@ -1,0 +1,86 @@
+﻿@model Goldnote.Models.GoldNote
+@inject Goldnote.Options options
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>GoldNote</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="GoldNoteName" class="control-label"></label>
+                <input asp-for="GoldNoteName" class="form-control" />
+                <span asp-validation-for="GoldNoteName" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Change" /> @Html.DisplayNameFor(model => model.Change)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="WithDiscount" /> @Html.DisplayNameFor(model => model.WithDiscount)
+                </label>
+            </div>            <div class="form-group">
+                <label asp-for="Destination" />
+
+                <select asp-for="Destination" asp-items="options.Destinations" class="form-control ">
+                    <option value="">送り先を選択してください</option>
+                </select>
+                <span asp-validation-for="Destination"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OnAccounting" class="control-label"></label>
+                <input asp-for="OnAccounting" class="form-control" />
+                <span asp-validation-for="OnAccounting" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreditCardMachine" class="control-label"></label>
+                <input asp-for="CreditCardMachine" class="form-control" />
+                <span asp-validation-for="CreditCardMachine" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GoldNoteSendingPaper" class="control-label"></label>
+                <input asp-for="GoldNoteSendingPaper" class="form-control" />
+                <span asp-validation-for="GoldNoteSendingPaper" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SpecialOptions" class="control-label"></label>
+                <input asp-for="SpecialOptions" class="form-control" />
+                <span asp-validation-for="SpecialOptions" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageAdress" class="control-label"></label>
+                <input asp-for="ImageAdress" class="form-control" />
+                <span asp-validation-for="ImageAdress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EditDate" class="control-label"></label>
+                <input asp-for="EditDate" class="form-control" />
+                <span asp-validation-for="EditDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EditerId" class="control-label"></label>
+                <input asp-for="EditerId" class="form-control" disabled />
+                <span asp-validation-for="EditerId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

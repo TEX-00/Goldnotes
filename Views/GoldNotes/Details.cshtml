@@ -1,0 +1,98 @@
+﻿@model Goldnote.Models.GoldNote
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>GoldNote</h4>
+    <hr />
+    <dl class="row dl-horizontal">
+        <dt class="col-sm-5 details">
+            @Html.DisplayNameFor(model => model.GoldNoteName)
+        </dt>
+        <dd class="col-sm-10 details">
+            @Html.DisplayFor(model => model.GoldNoteName)
+        </dd>
+
+        <dt class="col-sm-5 details">
+            @Html.DisplayNameFor(model => model.WithDiscount)
+        </dt>
+        <dd class="col-sm-10 details">
+            @(Model.WithDiscount ? "可" : "不可")
+        </dd>
+ 
+        <dt class="col-sm-5 details">
+            @Html.DisplayNameFor(model => model.Change)
+        </dt>
+        <dd class="col-sm-10 details">
+            @(Model.Change ? "有り" : "無し")
+        </dd>
+        <dt class="col-sm-5 details">
+            @Html.DisplayNameFor(model => model.Destination)
+        </dt>
+        <dd class="col-sm-10 details">
+            @(Model.Change ? "ユニー" : "本部")
+        </dd>
+        <dt class="col-sm-5 details">
+            @Html.DisplayNameFor(model => model.OnAccounting)
+        </dt>
+        <dd class="col-sm-10 details">
+            @Html.DisplayFor(model => model.OnAccounting)
+        </dd>
+        <dt class="col-sm-5 details">
+            @Html.DisplayNameFor(model => model.CreditCardMachine)
+        </dt>
+        <dd class="col-sm-10 details">
+            @Html.DisplayFor(model => model.CreditCardMachine)
+        </dd>
+        <dt class="col-sm-5 details">
+            @Html.DisplayNameFor(model => model.GoldNoteSendingPaper)
+        </dt>
+        <dd class="col-sm-10 details">
+            @Html.DisplayFor(model => model.GoldNoteSendingPaper)
+        </dd>
+        <dt class="col-sm-5 details">
+            @Html.DisplayNameFor(model => model.SpecialOptions)
+        </dt>
+        <dd class="col-sm-10 details">
+            @Html.DisplayFor(model => model.SpecialOptions)
+        </dd>
+
+
+        <dt class="col-sm-5 details">
+            @Html.DisplayNameFor(model => model.EditDate)
+        </dt>
+        <dd class="col-sm-10 details">
+            @Html.DisplayFor(model => model.EditDate)
+        </dd>
+        <dt class="col-sm-5 details">
+            @Html.DisplayNameFor(model => model.EditerId)
+        </dt>
+        <dd class="col-sm-10 details">
+            @Html.DisplayFor(model => model.EditerId)
+        </dd>
+
+
+
+        @{
+            if (Model.ImageAdress != null)
+            {
+                <dt class="col-sm-5 details">
+                    画像
+                </dt>
+                <dd class="col-sm-10 details">
+
+                    <img src="~/imgs/@(Model.ImageAdress)" asp-append-version="true" />
+                </dd>
+            }
+
+        }
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
