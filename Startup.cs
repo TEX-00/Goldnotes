@@ -33,7 +33,7 @@ namespace Goldnote
             services.AddSingleton<Options>();
             services.AddDbContext<MvcGoldnoteContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MvcGoldnoteContext")));
             services.AddDbContext<UserDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("UserDbContext")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount=false).AddEntityFrameworkStores<UserDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount=false).AddRoleManager<RoleManager<IdentityRole>>().AddEntityFrameworkStores<UserDbContext>().AddDefaultTokenProviders().AddDefaultUI();
             
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -102,7 +102,6 @@ namespace Goldnote
                 endpoints.MapRazorPages();
             
             });
-
 
         }
     }

@@ -18,6 +18,7 @@ namespace Goldnote.Areas.Identity.Pages.Account.Manage
 
         public static string PersonalData => "PersonalData";
         public static string CreateAnotherUser => "CraeteAnotherUser";
+        public static string ManageAnotherUser => "ManageAnotherUser";
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
@@ -28,6 +29,7 @@ namespace Goldnote.Areas.Identity.Pages.Account.Manage
 
         public static string ExternalLoginsNavClass(ViewContext viewContext) => PageNavClass(viewContext, ExternalLogins);
 
+        public static string ManageAnotherUserNavClass(ViewContext viewContext) => PageNavClass(viewContext,ManageAnotherUser);
         public static string CreateAnotherUserNavClass(ViewContext viewContext) => PageNavClass(viewContext,CreateAnotherUser);
         public static string PersonalDataNavClass(ViewContext viewContext) => PageNavClass(viewContext, PersonalData);
 

@@ -20,10 +20,12 @@ namespace Goldnote.Controllers
 
     public class GoldNotesController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly MvcGoldnoteContext _context;
         private readonly string imageFolder = "wwwroot/imgs";
-        public GoldNotesController(MvcGoldnoteContext context)
+        public GoldNotesController(MvcGoldnoteContext context,UserManager<IdentityUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -32,7 +34,15 @@ namespace Goldnote.Controllers
         // GET: GoldNotes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Goldnote.ToListAsync());
+            var model = await _context.Goldnote.ToListAsync();
+            var model_count = model.Count;
+            var idNameDic = IdToName(_userManager);
+            for(int i = 0; i < model_count; i++)
+            {
+                model[i].EditerId = idNameDic[model[i].EditerId];
+            }
+
+            return View(model);
         }
 
 [Authorize]
@@ -50,11 +60,13 @@ namespace Goldnote.Controllers
             {
                 return NotFound();
             }
-
+            
+            var idNameDic = IdToName(_userManager);
+            goldNote.EditerId = idNameDic[goldNote.EditerId];
             return View(goldNote);
         }
 
-[Authorize]
+[Authorize(Roles ="Editor")]
         // GET: GoldNotes/Create
         public IActionResult Create()
         {
@@ -66,7 +78,7 @@ namespace Goldnote.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-[Authorize]
+[Authorize(Roles="Editor")]
         public async Task<IActionResult> Create([Bind("Id,GoldNoteName,Change,WithDiscount,Destination,OnAccounting,CreditCardMachine,GoldNoteSendingPaper,SpecialOptions,EditerId")] GoldNote goldNote)
         {
             var files = Request.Form.Files;
@@ -90,7 +102,7 @@ namespace Goldnote.Controllers
 
              }
 
-            goldNote.EditerId = User.Identity.Name;
+            goldNote.EditerId = _userManager.GetUserId(User);
             goldNote.EditDate = DateTime.Today;
             if (ModelState.IsValid)
             {
@@ -102,7 +114,7 @@ namespace Goldnote.Controllers
         }
 
         // GET: GoldNotes/Edit/5
-[Authorize]
+[Authorize(Roles ="Editor,Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -115,6 +127,8 @@ namespace Goldnote.Controllers
             {
                 return NotFound();
             }
+            var idNameDic = IdToName(_userManager);
+            goldNote.EditerId = idNameDic[goldNote.EditerId];
             return View(goldNote);
         }
 
@@ -122,10 +136,12 @@ namespace Goldnote.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-[Authorize]
+    [Authorize(Roles="Editor")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,GoldNoteName,Change,Destination,OnAccounting,CreditCardMachine,GoldNoteSendingPaper,SpecialOptions,ImageAdress,EditDate,EditerId")] GoldNote goldNote)
         {
+            
+
             if (id != goldNote.Id)
             {
                 return NotFound();
@@ -135,6 +151,7 @@ namespace Goldnote.Controllers
             {
                 try
                 {
+                    goldNote.EditerId = _userManager.GetUserId(User);
                     _context.Update(goldNote);
                     await _context.SaveChangesAsync();
                 }
@@ -153,7 +170,7 @@ namespace Goldnote.Controllers
             }
             return View(goldNote);
         }
-
+    [Authorize(Roles = "Administrator,Editor")]
         // GET: GoldNotes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -164,22 +181,34 @@ namespace Goldnote.Controllers
 
             var goldNote = await _context.Goldnote
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+
+
             if (goldNote == null)
             {
                 return NotFound();
             }
+            if (goldNote.EditerId != _userManager.GetUserId(User) && !User.IsInRole("Administrator"))
+            {
+                return BadRequest();
 
+            }
+ 
             return View(goldNote);
         }
 
         // POST: GoldNotes/Delete/5
         [HttpPost, ActionName("Delete")]
-[Authorize]
+        [Authorize(Roles = "Editor,Administrator")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var goldNote = await _context.Goldnote.FindAsync(id);
+            if (goldNote.EditerId != _userManager.GetUserId(User) && !User.IsInRole("Administrator"))
+            {
+                return BadRequest();
 
+            }
             _context.Goldnote.Remove(goldNote);
             if (goldNote.ImageAdress != null)
             {
@@ -195,5 +224,35 @@ namespace Goldnote.Controllers
         {
             return _context.Goldnote.Any(e => e.Id == id);
         }
+
+        private Dictionary<string,string> IdToName(UserManager<IdentityUser> userManager)
+        {
+            var dic = new Dictionary<string, string>();
+
+            var users = userManager.Users;
+            foreach(var user in users)
+            {
+                dic.Add(user.Id,user.UserName);
+            }
+
+
+            return dic;
+        }
+        private Dictionary<string,string> NameToId(UserManager<IdentityUser> userManager)
+        {
+            var dic = new Dictionary<string, string>();
+
+            var users = userManager.Users;
+            foreach(var user in users)
+            {
+                dic.Add(user.UserName,user.Id);
+            }
+
+
+            return dic;
+        }
+
+
+
     }
 }

@@ -1,0 +1,62 @@
+﻿@page
+@model Goldnote.Areas.Identity.Pages.Account.Manage.AnotherUserDetailPageModel
+@{
+}
+
+
+<h4>@ViewData["Title"]</h4>
+<div class="row">
+    <div class="col-md-6">
+        <form id="change-form" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.Id"></label>
+                <input asp-for="Input.Id" value="@Model.targetUser.Id" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Name"></label>
+                <input asp-for="Input.Name" value="@Model.targetUser.UserName" class="form-control" />
+            </div>
+
+
+
+            <div class="form-group">
+                <label asp-for="Input.isAdmin"></label>
+                @{ if (Model.isAdmin)
+                    {
+
+                        <input asp-for="Input.isAdmin" class="form-control" checked/>
+                    }
+                    else
+                    {
+                        <input asp-for="Input.isAdmin" class="form-control" />
+                    }
+                }
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.isEditor"></label>
+                @{ if (Model.isEditor)
+                    {
+
+                        <input asp-for="Input.isEditor" class="form-control" checked/>
+                    }
+                    else
+                    {
+                        <input asp-for="Input.isEditor" class="form-control" />
+                    }
+                }
+            </div>
+
+
+
+
+            <button id="change-email-button" type="submit" asp-page-handler="DeleteAnotherUser" class="btn btn-danger">DeleteAnotherUser</button>
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeAnotherUser" class="btn btn-warning">ChangeAnotherUser</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

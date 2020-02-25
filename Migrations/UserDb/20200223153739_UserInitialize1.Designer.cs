@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Goldnote.Migrations.UserDb
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20200221161458_addusers6")]
-    partial class addusers6
+    [Migration("20200223153739_UserInitialize1")]
+    partial class UserInitialize1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

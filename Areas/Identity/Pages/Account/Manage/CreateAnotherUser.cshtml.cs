@@ -13,15 +13,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Goldnote.Models;
 namespace Goldnote.Areas.Identity.Pages.Account.Manage
 {
+    [Authorize(Roles = "Administrator")]
     public class CreateAnotherUserModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-
         public CreateAnotherUserModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
@@ -39,7 +40,6 @@ namespace Goldnote.Areas.Identity.Pages.Account.Manage
         public bool resultmode { get; set; } 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
         public string name { get; set; }
-
         public string pass { get; set; }
 
         public class InputModel
@@ -47,6 +47,9 @@ namespace Goldnote.Areas.Identity.Pages.Account.Manage
             [Required]
             [Display(Name = "Name")]
             public string Name { get; set; }
+            public bool IsEditor { get; set; }
+            public bool IsAdministrator { get; set; }
+
 
         }
 
@@ -67,6 +70,17 @@ namespace Goldnote.Areas.Identity.Pages.Account.Manage
                 var temppass = Guid.NewGuid().ToString("N").Substring(0,10);
 
                 var result = await _userManager.CreateAsync(user, temppass);
+                if (Input.IsAdministrator)
+                {
+                    await _userManager.AddToRoleAsync(user, "Administrator");
+                }
+
+                if (Input.IsEditor)
+                {
+                    await _userManager.AddToRoleAsync(user,"Editor");
+                }
+
+
                 if (result.Succeeded)
                 {
 
@@ -77,7 +91,7 @@ namespace Goldnote.Areas.Identity.Pages.Account.Manage
                         pageHandler: null,
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
-
+                    
                     //  await _emailSender.SendEmailAsync(Input.Name, "Confirm your email",$"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                     resultmode = true;
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)

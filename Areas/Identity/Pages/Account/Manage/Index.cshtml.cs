@@ -13,20 +13,24 @@ namespace Goldnote.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         public string Username { get; set; }
+        
+        public List<string> Roles { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
-
+        
         [BindProperty]
         public InputModel Input { get; set; }
 
@@ -41,9 +45,12 @@ namespace Goldnote.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
+            
+            var userRoles = await _userManager.GetRolesAsync(user);
+            Roles = userRoles.ToList();
             Username = userName;
-
+            
+            
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber
@@ -69,7 +76,7 @@ namespace Goldnote.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
+            
             if (!ModelState.IsValid)
             {
                 await LoadAsync(user);

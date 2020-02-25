@@ -1,0 +1,118 @@
+﻿@page
+@model Goldnote.Areas.Identity.Pages.Account.Manage.ManageAnotherUserModel
+@{
+}
+
+
+
+
+<table class="table" id="users">
+    <thead>
+        <tr>
+            <th class="sort" data-sort="id">
+                ID
+            </th>
+            <th class="sort" data-sort="name">
+                Name
+            </th>
+            <th class="sort" data-sort="isAdmin">
+                管理者
+            </th>
+            <th class="sort" data-sort="isEditor">
+                編集者
+            </th>
+            <th>
+                変更
+            </th>
+            
+ 
+        </tr>
+    </thead>
+    <tbody class="list">
+        @foreach (var item in Model.users)
+        {
+            <tr id="@(item.id)">
+                <td class="id">
+                    @Html.DisplayFor(modelItem => item.id)
+                </td>
+
+                <td class="name">
+                    @Html.DisplayFor(modelItem => item.name)
+                </td>
+                <td class="isAdmin">
+                    @Html.DisplayFor(modelItem => item.isAdmin)
+                </td>
+                <td class="isEditor">
+                    @Html.DisplayFor(modelItem => item.isEditor)
+                </td>
+                <td>
+                    <a href="/Identity/Account/Manage/AnotherUserDetailPage?id=@item.id">
+                    
+                    <button type="button" class="btn-primary" >              
+                    変更
+                    </button>
+                    </a>
+                </td>
+
+
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section scripts{
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+    <script>
+        var options = {
+            valueNames: ['name','id', 'isEditor', 'isAdmin',]
+
+        };
+
+        var goldnoteList = new List('users', options);
+        userList.sort('name', { order: 'desc' });
+        alert('called')
+    </script>
+
+    <script>
+        function onClick(target) {
+            alert(target)
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+        .sort.desc:after {
+            content: "▼";
+        }
+
+        .sort.asc:after {
+            content: "▲";
+        }
+    </style>
+}

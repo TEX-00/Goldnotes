@@ -8,6 +8,7 @@ using Goldnote.Models;
 
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Goldnote.Data
 {
@@ -23,7 +24,7 @@ namespace Goldnote.Data
 
 
 
-    public class UserDbContext : IdentityDbContext
+    public class UserDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
     {
         public UserDbContext(DbContextOptions<UserDbContext> options)
             : base(options)

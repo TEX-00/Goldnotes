@@ -2,7 +2,7 @@
 
 namespace Goldnote.Migrations.UserDb
 {
-    public partial class addusers3 : Migration
+    public partial class UserInitialize1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-
+using Microsoft.Extensions.Configuration;
 namespace Goldnote.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
@@ -23,7 +23,7 @@ namespace Goldnote.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-
+        
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
@@ -61,14 +61,26 @@ namespace Goldnote.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
+            
+            if (_userManager.GetUsersInRoleAsync("Administrator").Result.Any())
+            {
+                return NotFound();
+            }
+
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            if (_userManager.GetUsersInRoleAsync("Administrator").Result.Any())
+            {
+                return NotFound();
+            }
+
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
@@ -97,6 +109,9 @@ namespace Goldnote.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                       await _userManager.AddToRoleAsync(user, "Administrator");
+                       
+                       await _userManager.AddToRoleAsync(user, "Editor");
                         return LocalRedirect(returnUrl);
                     }
                 }

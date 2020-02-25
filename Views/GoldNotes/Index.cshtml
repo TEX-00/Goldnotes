@@ -7,7 +7,10 @@
 <h1>Index</h1>
 
 <p>
+    @if (User.IsInRole("Editor"))
+    {
     <a asp-action="Create">Create New</a>
+    }
 </p>
 <table class="table" id="goldnotes">
     <thead>
@@ -90,10 +93,13 @@
                     @Html.DisplayFor(modelItem => item.EditerId)
                 </td>
                 <td>
-                    <a class="btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+
                     <a  class="btn-success" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (User.IsInRole("Editor") | User.IsInRole("Administrator"))
+                    {
+                    <a class="btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                     <a class="btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                    }</td>
             </tr>
         }
     </tbody>
