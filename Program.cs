@@ -8,6 +8,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Goldnote.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Goldnote
 {
@@ -16,6 +18,36 @@ namespace Goldnote
         public static void Main(string[] args)
         {
            var host= CreateHostBuilder(args).Build();
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                        var context = services.GetRequiredService<MvcGoldnoteContext>();
+                    context.Database.Migrate();                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while seeding the database.");
+                }
+            }
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<UserDbContext>();
+                    context.Database.Migrate();
+                    context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while seeding the database.");
+                }
+            }
 
 
             using (var scope = host.Services.CreateScope())
@@ -69,6 +101,10 @@ namespace Goldnote
                     logger.LogError(ex, "An error occurred creating Role.");
                 }
             }
+
+
+            
+
 
             host.Run();
 

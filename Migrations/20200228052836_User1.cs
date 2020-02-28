@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Goldnote.Migrations.UserDb
+namespace Goldnote.Migrations
 {
-    public partial class UserInitialize : Migration
+    public partial class User1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

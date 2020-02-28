@@ -4,16 +4,14 @@ using Goldnote.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Goldnote.Migrations
+namespace Goldnote.Migrations.MvcGoldnote
 {
     [DbContext(typeof(MvcGoldnoteContext))]
-    [Migration("20200215074027_InitialCreate")]
-    partial class InitialCreate
+    partial class MvcGoldnoteContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,8 +38,8 @@ namespace Goldnote.Migrations
                     b.Property<DateTime>("EditDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EditerId")
-                        .HasColumnType("int");
+                    b.Property<string>("EditerId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GoldNoteName")
                         .IsRequired()
@@ -58,6 +56,9 @@ namespace Goldnote.Migrations
 
                     b.Property<string>("SpecialOptions")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("WithDiscount")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
