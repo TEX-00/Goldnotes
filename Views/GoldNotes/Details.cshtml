@@ -1,5 +1,4 @@
 ﻿@model Goldnote.Models.GoldNote
-
 @{
     ViewData["Title"] = "Details";
 }
@@ -85,7 +84,7 @@
                 </dt>
                 <dd class="col-sm-10 details">
 
-                    <img src="~/imgs/@(Model.ImageAdress)" asp-append-version="true" />
+                    <image src="/api/ImageModels/@(Model.ImageAdress)" />
                 </dd>
             }
 

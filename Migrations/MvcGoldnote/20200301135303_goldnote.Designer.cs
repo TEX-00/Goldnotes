@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Goldnote.Migrations.MvcGoldnote
 {
     [DbContext(typeof(MvcGoldnoteContext))]
-    [Migration("20200228053008_Goldnote11")]
-    partial class Goldnote11
+    [Migration("20200301135303_goldnote")]
+    partial class goldnote
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Goldnote.Data;
 using Microsoft.EntityFrameworkCore;
-
+using Goldnote.Models;
 namespace Goldnote
 {
     public class Program
@@ -19,13 +19,35 @@ namespace Goldnote
         {
            var host= CreateHostBuilder(args).Build();
 
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                /*try
+                {*/
+
+
+                services.GetRequiredService<ILogger<Program>>().Log(LogLevel.Debug, "image----------------------------------------------------------------------------");
+
+                var imageModelDbContext = services.GetRequiredService<ImageModelDbContext>();
+                imageModelDbContext.Database.Migrate();
+                /*}
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while seeding the database.");
+                }*/
+            }
+            //データベースマイグレーション
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 try
                 {
-                        var context = services.GetRequiredService<MvcGoldnoteContext>();
-                    context.Database.Migrate();                }
+                    var mvcGoldnoteContext = services.GetRequiredService<MvcGoldnoteContext>();
+                    mvcGoldnoteContext.Database.Migrate();
+
+                }
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
@@ -38,9 +60,11 @@ namespace Goldnote
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<UserDbContext>();
-                    context.Database.Migrate();
-                    context.SaveChanges();
+
+                    var userDbContext = services.GetRequiredService<UserDbContext>();
+                    userDbContext.Database.Migrate();
+
+
                 }
                 catch (Exception ex)
                 {
@@ -50,6 +74,7 @@ namespace Goldnote
             }
 
 
+            //ロールの追加
             using (var scope = host.Services.CreateScope())
             {
                 var serviceProvider = scope.ServiceProvider;

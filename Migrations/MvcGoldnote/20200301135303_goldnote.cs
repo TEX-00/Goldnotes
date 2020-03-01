@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Goldnote.Migrations.MvcGoldnote
 {
-    public partial class Goldnote11 : Migration
+    public partial class goldnote : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

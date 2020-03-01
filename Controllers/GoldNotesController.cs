@@ -22,11 +22,12 @@ namespace Goldnote.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly MvcGoldnoteContext _context;
-        private readonly string imageFolder = "wwwroot/imgs";
-        public GoldNotesController(MvcGoldnoteContext context,UserManager<IdentityUser> userManager)
+        private readonly ImageModelDbContext _imageModelDbContext;
+        public GoldNotesController(MvcGoldnoteContext context,UserManager<IdentityUser> userManager,ImageModelDbContext imageModelDbContext)
         {
             _userManager = userManager;
             _context = context;
+            _imageModelDbContext = imageModelDbContext;
         }
 
         
@@ -85,20 +86,9 @@ namespace Goldnote.Controllers
             if (files.Count() != 0 && files.First().Length!=0)
             {
                 var file = files.First();
-                if (FileChecker.IsValidFile(file))
-                {
-                    var filename = DateTime.Now.ToString("yyyyMMddhhmmss") + Path.GetExtension(file.FileName);
-                   
-                    using (var fs = new FileStream(Path.Join(imageFolder,filename), FileMode.Create, FileAccess.Write))
-                    {
-                        file.CopyTo(fs);
 
-                    }
-                    goldNote.ImageAdress = filename;
-
-                }
-
-
+                var file_id =ImageManager.WriteToDb(file, _imageModelDbContext);
+                goldNote.ImageAdress = file_id;
 
              }
 
@@ -152,7 +142,45 @@ namespace Goldnote.Controllers
                 try
                 {
                     goldNote.EditerId = _userManager.GetUserId(User);
-                    _context.Update(goldNote);
+                    var oldnote = _context.Goldnote.Find(id);
+
+                    oldnote.GoldNoteName = goldNote.GoldNoteName;
+                    
+                    oldnote.Change = goldNote.Change;
+
+                    oldnote.Destination = goldNote.Destination;
+                    oldnote.OnAccounting = goldNote.OnAccounting;
+                    oldnote.CreditCardMachine = goldNote.CreditCardMachine;
+                    oldnote.GoldNoteSendingPaper = goldNote.GoldNoteSendingPaper;
+                    
+                    oldnote.SpecialOptions = goldNote.SpecialOptions;
+                    var imageStatus=HttpContext.Request.Form["imageOverride"];
+                    if (imageStatus == "delete")
+                    {
+                        DelteImage(oldnote.ImageAdress);
+                        oldnote.ImageAdress = null;
+                    }else if (imageStatus == "edit")
+                    {
+                        var files = Request.Form.Files;
+                        if (files.Count() != 0 && files.First().Length != 0)
+                        {
+                            var file = files.First();
+
+                            var file_id = ImageManager.WriteToDb(file, _imageModelDbContext);
+                            oldnote.ImageAdress = file_id;
+
+                        }
+
+
+
+
+                    }
+
+
+
+
+
+                    _context.Update(oldnote);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -193,7 +221,8 @@ namespace Goldnote.Controllers
                 return BadRequest();
 
             }
- 
+            var idNameDic = IdToName(_userManager);
+            goldNote.EditerId = idNameDic[goldNote.EditerId];
             return View(goldNote);
         }
 
@@ -212,8 +241,7 @@ namespace Goldnote.Controllers
             _context.Goldnote.Remove(goldNote);
             if (goldNote.ImageAdress != null)
             {
-                System.IO.File.Delete(Path.Join(imageFolder, goldNote.ImageAdress));
-
+                DelteImage(goldNote.ImageAdress);
 
             }
             await _context.SaveChangesAsync();
@@ -253,6 +281,20 @@ namespace Goldnote.Controllers
         }
 
 
+        private void DelteImage(string id)
+        {
+            var model = _imageModelDbContext.ImageModels.Find(id);
+            if (model == null)
+                return;
+
+            try {
+                _imageModelDbContext.Remove(model);
+                _imageModelDbContext.SaveChanges();
+            
+            } catch { }
+
+
+        }
 
     }
 }

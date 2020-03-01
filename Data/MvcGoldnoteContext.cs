@@ -23,7 +23,17 @@ namespace Goldnote.Data
     }
 
 
+    public class ImageModelDbContext : DbContext
+    {
 
+        public ImageModelDbContext(DbContextOptions<ImageModelDbContext> options) : base(options)
+        {
+
+        }
+        public DbSet<ImageModel> ImageModels { get; set; }
+
+
+    }
     public class UserDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
     {
         public UserDbContext(DbContextOptions<UserDbContext> options)

@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit"  enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -56,11 +56,6 @@
                 <span asp-validation-for="SpecialOptions" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImageAdress" class="control-label"></label>
-                <input asp-for="ImageAdress" class="form-control" />
-                <span asp-validation-for="ImageAdress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="EditDate" class="control-label"></label>
                 <input asp-for="EditDate" class="form-control" />
                 <span asp-validation-for="EditDate" class="text-danger"></span>
@@ -70,6 +65,32 @@
                 <input asp-for="EditerId" class="form-control" disabled />
                 <span asp-validation-for="EditerId" class="text-danger"></span>
             </div>
+            @if (Model.ImageAdress != null)
+            {
+                <div class="form-group">
+                    <label class="control-label"> 現在の画像</label>
+                    <img src="/api/ImageModels/@Model.ImageAdress" />
+                </div>
+            }
+            <div class="form-group">
+                <label class="control-label">画像</label><br>
+
+                <div class="btn-primary"><input class="notimg" type="radio" name="imageOverride" value="stay" /> <label>そのまま</label></div><br />
+
+                @{
+
+                    if (Model.ImageAdress != null)
+                    {
+                        <div class="btn-danger"><input class="notimg" type="radio" name="imageOverride" value="delete">  <label>削除</label></div><br />
+                    }
+                }
+
+                <div class="btn-warning"> <input type="radio" class="imgedit" name="imageOverride" value="edit" /><label>差し替え</label></div>
+                <input type="file" id="imgup" name="newimage" />
+            </div>
+
+
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -83,4 +104,29 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+
+        $("#imgup").hide();
+        $(".imgedit").change(
+            function () {
+                $("#imgup").show('slow');
+            }
+        )
+
+        $(".notimg").change(
+            function () {
+                $("#imgup").hide('slow');
+            }
+        )
+
+
+
+
+    </script>
+
+
+
+
+
 }

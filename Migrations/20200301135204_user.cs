@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Goldnote.Migrations
 {
-    public partial class User1 : Migration
+    public partial class user : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

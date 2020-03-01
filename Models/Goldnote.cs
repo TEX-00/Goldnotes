@@ -37,7 +37,6 @@ namespace Goldnote.Models
 
         [DisplayName("編集者")]
         public string EditerId { get; set; }
-
-
+        
     }
 }

@@ -33,6 +33,7 @@ namespace Goldnote
             services.AddSingleton<Options>();
             services.AddDbContext<MvcGoldnoteContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MvcGoldnoteContext")));
             services.AddDbContext<UserDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("UserDbContext")));
+            services.AddDbContext<ImageModelDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ImageModelDbContext")));
             services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount=false).AddRoleManager<RoleManager<IdentityRole>>().AddEntityFrameworkStores<UserDbContext>().AddDefaultTokenProviders().AddDefaultUI();
             
             services.AddControllersWithViews();
