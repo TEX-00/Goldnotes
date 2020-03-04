@@ -91,10 +91,6 @@ namespace Goldnote.Controllers
                 goldNote.ImageAdress = file_id;
 
              }
-            else
-            {
-                goldNote.ImageAdress = "NOIMAGE";
-            }
 
             goldNote.EditerId = _userManager.GetUserId(User);
             goldNote.EditDate = DateTime.Today;

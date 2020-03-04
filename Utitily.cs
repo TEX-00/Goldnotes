@@ -329,6 +329,11 @@ namespace Goldnote
 
     public class ImageManager
     {
+        /// <summary>
+        /// System.Drawingを使って圧縮された画像のストリームと名前を得る
+        /// </summary>
+        /// <param name="file">入力画像ファイル</param>
+        /// <returns>名前と画像のストリームのタプル</returns>
         private static Tuple<string,MemoryStream> GetCommpressedImage(IFormFile file)
         {
             var imageId = DateTime.Now.ToString("yyyyMMddhhmmss");
@@ -351,6 +356,11 @@ namespace Goldnote
             }
             return new Tuple<string, MemoryStream>(imageId, imageStream);
         }
+        /// <summary>
+        /// SixLabor.ImageSharpを使って圧縮された画像のストリームと名前を得る
+        /// </summary>
+        /// <param name="file">入力画像ファイル</param>
+        /// <returns>名前と画像のストリームのタプル</returns>
         private static Tuple<string, MemoryStream> GCIWIS(IFormFile file) {
 
 
@@ -385,7 +395,11 @@ namespace Goldnote
 
 
 
-
+/// <summary>
+/// memorystreamをBase64urlに変換
+/// </summary>
+/// <param name="ms">入力ストリーム</param>
+/// <returns>Base64url文字列</returns>
 
 
         private static string MsToBase64(MemoryStream ms)
@@ -402,6 +416,12 @@ namespace Goldnote
                 return null;
             }
         }
+        /// <summary>
+        ///　画像を圧縮しデータベースに投入する
+        /// </summary>
+        /// <param name="file">入力ファイル</param>
+        /// <param name="imageModelDbContext">画像データベースにのコンテキスト</param>
+        /// <returns>画像データベースのキー</returns>
         public static string WriteToDb(IFormFile file,ImageModelDbContext imageModelDbContext)
         {
             Tuple<string, MemoryStream> tuple=null;

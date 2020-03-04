@@ -9,7 +9,7 @@
 <p>
     @if (User.IsInRole("Editor"))
     {
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">新規作成</a>
     }
 </p>
 <table class="table" id="goldnotes">
@@ -23,7 +23,7 @@
             </th>
             <th class="sort" data-sort="withdiscount">
 
-@Html.DisplayNameFor(model=> model.WithDiscount)
+            @Html.DisplayNameFor(model=> model.WithDiscount)
 
             </th>
             <th class="sort" data-sort="destination">
@@ -88,11 +88,11 @@
                 </td>
                 <td>
 
-                    <a  class="btn-success" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a  class="btn-success" asp-action="Details" asp-route-id="@item.Id">詳細</a>
                     @if (User.IsInRole("Editor") | User.IsInRole("Administrator"))
                     {
-                    <a class="btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    <a class="btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a class="btn-warning" asp-action="Edit" asp-route-id="@item.Id">編集</a>
+                    <a class="btn-danger" asp-action="Delete" asp-route-id="@item.Id">削除</a>
                     }</td>
             </tr>
         }
@@ -109,8 +109,7 @@
         };
 
         var goldnoteList = new List('goldnotes', options);
-        userList.sort('name', { order: 'desc' });
-        alert('called')
+        goldnoteList.sort('name', { order: 'desc' });
     </script>
 
     <style>
