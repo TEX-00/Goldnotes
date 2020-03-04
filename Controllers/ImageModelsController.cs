@@ -8,10 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using Goldnote.Data;
 using Goldnote.Models;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
+
 namespace Goldnote.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ImageModelsController : ControllerBase
     {
         private readonly ImageModelDbContext _context;
@@ -36,7 +39,9 @@ namespace Goldnote.Controllers
 
             if (imageModel == null)
             {
-                return NotFound();
+
+            imageModel = await _context.ImageModels.FindAsync("nfimage");
+            return new FileStreamResult(new MemoryStream(imageModel.image),"image/png");
             }
 
             return new FileStreamResult(new MemoryStream(imageModel.image),"image/png");

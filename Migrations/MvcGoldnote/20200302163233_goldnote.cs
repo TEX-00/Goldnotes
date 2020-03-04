@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Goldnote.Migrations.MvcGoldnote
 {
@@ -12,7 +13,7 @@ namespace Goldnote.Migrations.MvcGoldnote
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     GoldNoteName = table.Column<string>(nullable: false),
                     Change = table.Column<bool>(nullable: false),
                     WithDiscount = table.Column<bool>(nullable: false),

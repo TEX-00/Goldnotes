@@ -29,16 +29,23 @@ namespace Goldnote
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var builder = new PostgreSqlConnectionStringBuilder(Configuration["DATABASE_URL"])
+            {
+                Pooling = true,
+                TrustServerCertificate = true,
+                SslMode = SslMode.Require
+            };
+
             services.AddMvc();
             services.AddSingleton<Options>();
-            services.AddDbContext<MvcGoldnoteContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MvcGoldnoteContext")));
-            services.AddDbContext<UserDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("UserDbContext")));
-            services.AddDbContext<ImageModelDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ImageModelDbContext")));
+            services.AddDbContext<MvcGoldnoteContext>(options => options.UseNpgsql(builder.ConnectionString));
+            services.AddDbContext<UserDbContext>(options => options.UseNpgsql(builder.ConnectionString));
+            services.AddDbContext<ImageModelDbContext>(options => options.UseNpgsql(builder.ConnectionString));
             services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount=false).AddRoleManager<RoleManager<IdentityRole>>().AddEntityFrameworkStores<UserDbContext>().AddDefaultTokenProviders().AddDefaultUI();
             
             services.AddControllersWithViews();
             services.AddRazorPages();
-
 
             services.Configure<IdentityOptions>(options =>
             {

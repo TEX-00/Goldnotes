@@ -41,9 +41,6 @@
             <th class="sort" data-sort="specialoptions">
                 @Html.DisplayNameFor(model => model.SpecialOptions)
             </th>
-            <th class="sort" data-sort="imgs">
-                画像
-            </th>
             <th class="sort" data-sort="editdate">
                 @Html.DisplayNameFor(model => model.EditDate)
             </th>
@@ -82,9 +79,6 @@
                 </td>
                 <td class="specialoptions">
                     @Html.DisplayFor(modelItem => item.SpecialOptions)
-                </td>
-                <td class="imgs">
-                    @(item.ImageAdress != null ? "有り" : "無し")
                 </td>
                 <td class="editdate">
                     @Html.DisplayFor(modelItem => item.EditDate)

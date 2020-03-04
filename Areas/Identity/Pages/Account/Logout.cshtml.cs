@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace Goldnote.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
+    [RequireHttps]
     public class LogoutModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;

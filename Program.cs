@@ -18,25 +18,25 @@ namespace Goldnote
         public static void Main(string[] args)
         {
            var host= CreateHostBuilder(args).Build();
-
-
+            /*
+            
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                /*try
-                {*/
+                try
+                {
 
 
                 services.GetRequiredService<ILogger<Program>>().Log(LogLevel.Debug, "image----------------------------------------------------------------------------");
 
                 var imageModelDbContext = services.GetRequiredService<ImageModelDbContext>();
                 imageModelDbContext.Database.Migrate();
-                /*}
+                }
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred while seeding the database.");
-                }*/
+                }
             }
             //データベースマイグレーション
             using (var scope = host.Services.CreateScope())
@@ -128,7 +128,7 @@ namespace Goldnote
             }
 
 
-            
+            */
 
 
             host.Run();
@@ -143,6 +143,11 @@ namespace Goldnote
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls();
+                    webBuilder.UseKestrel(options =>
+                     {
+                         options.ListenAnyIP(Int32.Parse(System.Environment.GetEnvironmentVariable("PORT")));
+                     });
                 });
     }
 }

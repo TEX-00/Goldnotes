@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- まずはjQueryを読み込みます -->
-
+    <script>
+        if (location.protocol == 'http:') {
+            location.replace(location.href.replace(/http:/, 'https:'));
+        }
+    </script>
     <title>@ViewData["Title"] - Goldnote</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />

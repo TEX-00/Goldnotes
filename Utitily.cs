@@ -10,7 +10,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Drawing;
 using Goldnote.Models;
+using System.Data.Common;
+using Microsoft.AspNetCore.Hosting;
+using System.Diagnostics;
 
+
+using System.Numerics;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.Primitives;
+using SixLabors.Shapes;
 namespace Goldnote
 {
     public class Options
@@ -27,7 +37,178 @@ namespace Goldnote
         };
     }
 
+    public enum SslMode
+    {
+        Require,
+        Disable,
+        Prefer
+    }
 
+    public class PostgreSqlConnectionStringBuilder : DbConnectionStringBuilder
+    {
+        private string _database;
+        private string _host;
+        private string _password;
+        private bool _pooling;
+        private int _port;
+        private string _username;
+        private bool _trustServerCertificate;
+        private SslMode _sslMode;
+
+        public PostgreSqlConnectionStringBuilder(string uriString)
+        {
+            ParseUri(uriString);
+        }
+
+        public string Database
+        {
+            get => _database;
+            set
+            {
+                base["database"] = value;
+                _database = value;
+            }
+        }
+
+        public string Host
+        {
+            get => _host;
+            set
+            {
+                base["host"] = value;
+                _host = value;
+            }
+        }
+
+        public string Password
+        {
+            get => _password;
+            set
+            {
+                base["password"] = value;
+                _password = value;
+            }
+        }
+
+        public bool Pooling
+        {
+            get => _pooling;
+            set
+            {
+                base["pooling"] = value;
+                _pooling = value;
+            }
+        }
+
+        public int Port
+        {
+            get => _port;
+            set
+            {
+                base["port"] = value;
+                _port = value;
+            }
+        }
+
+        public string Username
+        {
+            get => _username;
+            set
+            {
+                base["username"] = value;
+                _username = value;
+            }
+        }
+
+        public bool TrustServerCertificate
+        {
+            get => _trustServerCertificate;
+            set
+            {
+                base["trust server certificate"] = value;
+                _trustServerCertificate = value;
+            }
+        }
+
+        public SslMode SslMode
+        {
+            get => _sslMode;
+            set
+            {
+                base["ssl mode"] = value.ToString();
+                _sslMode = value;
+            }
+        }
+
+        public override object this[string keyword]
+        {
+            get
+            {
+                if (keyword == null) throw new ArgumentNullException(nameof(keyword));
+                return base[keyword.ToLower()];
+            }
+            set
+            {
+                if (keyword == null) throw new ArgumentNullException(nameof(keyword));
+
+                switch (keyword.ToLower())
+                {
+                    case "host":
+                        Host = (string)value;
+                        break;
+
+                    case "port":
+                        Port = Convert.ToInt32(value);
+                        break;
+
+                    case "database":
+                        Database = (string)value;
+                        break;
+
+                    case "username":
+                        Username = (string)value;
+                        break;
+
+                    case "password":
+                        Password = (string)value;
+                        break;
+
+                    case "pooling":
+                        Pooling = Convert.ToBoolean(value);
+                        break;
+
+                    case "trust server certificate":
+                        TrustServerCertificate = Convert.ToBoolean(value);
+                        break;
+
+                    case "sslmode":
+                        SslMode = (SslMode)value;
+                        break;
+
+                    default:
+                        throw new ArgumentException(string.Format("Invalid keyword '{0}'.", keyword));
+                }
+            }
+        }
+
+        public override bool ContainsKey(string keyword)
+        {
+            return base.ContainsKey(keyword.ToLower());
+        }
+
+        private void ParseUri(string uriString)
+        {
+            var isUri = Uri.TryCreate(uriString, UriKind.Absolute, out var uri);
+
+            if (!isUri) throw new FormatException(string.Format("'{0}' is not a valid URI.", uriString));
+
+            Host = uri.Host;
+            Port = uri.Port;
+            Database = uri.LocalPath.Substring(1);
+            Username = uri.UserInfo.Split(':')[0];
+            Password = uri.UserInfo.Split(':')[1];
+        }
+    }
     public class FileChecker
     {
         private static byte[] getBytes(IFormFile file)
@@ -81,7 +262,7 @@ namespace Goldnote
             }
 
             bool flag = false;
-            string ext = Path.GetExtension(fileName);
+            string ext = System.IO.Path.GetExtension(fileName);
             if (string.IsNullOrEmpty(ext))
             {
                 return false;
@@ -132,7 +313,18 @@ namespace Goldnote
             return flag;
         }
     }
-
+    public static class WebHostBuilderExtensions
+    {
+        public static IWebHostBuilder UsePort(this IWebHostBuilder builder)
+        {
+            var port = Environment.GetEnvironmentVariable("PORT");
+            if (string.IsNullOrEmpty(port))
+            {
+                return builder;
+            }
+            return builder.UseUrls($"https://+:{port}");
+        }
+    }
 
 
     public class ImageManager
@@ -141,27 +333,59 @@ namespace Goldnote
         {
             var imageId = DateTime.Now.ToString("yyyyMMddhhmmss");
             var imageStream = new MemoryStream();
-            if (!FileChecker.IsValidFile(file))
-            {
-                return null;
-            }
+
             try
             {
                 Bitmap origin = new Bitmap(file.OpenReadStream());
                 var rate = 500.0d / Math.Max(origin.Width, origin.Height);
-                Bitmap target = new Bitmap(origin, new Size((int)(origin.Width * rate),(int) (origin.Height * rate)));
+                Bitmap target = new Bitmap(origin, new System.Drawing.Size((int)(origin.Width * rate),(int) (origin.Height * rate)));
                 target.Save(imageStream, System.Drawing.Imaging.ImageFormat.Png);
                 imageStream.Position = 0;
 
             }
-            catch
+            catch(Exception e)
             {
-                imageStream.Dispose();
-
-                return null;
+                file.OpenReadStream().CopyTo(imageStream);
+                Debug.WriteLine(e.Message);
+                return new Tuple<string, MemoryStream>(imageId,imageStream);
             }
             return new Tuple<string, MemoryStream>(imageId, imageStream);
         }
+        private static Tuple<string, MemoryStream> GCIWIS(IFormFile file) {
+
+
+            SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(file.OpenReadStream());
+            var resultSteam = new MemoryStream();
+            try
+            {
+                var bigger = Math.Max(image.Height, image.Width);
+                var rate = 500.0d / (double)bigger;
+                image.Mutate(x => x.Resize((int)(image.Width * rate), (int)(image.Height * rate)));
+                image.SaveAsPng(resultSteam);
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                file.CopyTo(resultSteam);
+            }
+            finally
+            {
+                image.Dispose();
+            }
+            return new Tuple<string, MemoryStream>(file.FileName, resultSteam);
+
+
+
+
+
+
+
+
+        }
+
+
+
+
 
 
         private static string MsToBase64(MemoryStream ms)
@@ -180,10 +404,17 @@ namespace Goldnote
         }
         public static string WriteToDb(IFormFile file,ImageModelDbContext imageModelDbContext)
         {
-            var tuple = GetCommpressedImage(file);
-            if (tuple == null)
+            Tuple<string, MemoryStream> tuple=null;
+            try {
+                 tuple = GCIWIS(file);
+            }
+            catch(Exception e)
             {
-                return null;
+                return e.Message;
+            }
+             if (tuple.Item2 == null)
+            {
+                return tuple.Item1;
             }
             var name = tuple.Item1;
             var imageStream = tuple.Item2;
@@ -194,9 +425,10 @@ namespace Goldnote
                 imageModelDbContext.Add(imageModel);
                 imageModelDbContext.SaveChanges();
             }
-            catch
+            catch(Exception e)
             {
-                return null;
+                Debug.WriteLine(e.Message);
+                return e.Message;
             }
                 return name;
 
