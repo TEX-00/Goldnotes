@@ -145,9 +145,9 @@ namespace Goldnote
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseUrls();
                     webBuilder.UseKestrel(options =>
-                     {
-                         options.ListenAnyIP(Int32.Parse(System.Environment.GetEnvironmentVariable("PORT")));
-                     });
+                         {
+                             options.ListenAnyIP(Int32.Parse(System.Environment.GetEnvironmentVariable("PORT")));
+                         });
                 });
     }
 }

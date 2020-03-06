@@ -1,0 +1,139 @@
+﻿@model IEnumerable<Goldnote.Models.GoldNote>
+
+@{
+    ViewData["Title"] = "ImageCards";
+}
+
+<h1>ImageCards</h1>
+
+<h1>Index</h1>
+
+<p>
+    @if (User.IsInRole("Editor"))
+    {
+        <a asp-action="Create">新規作成</a>
+    }
+</p>
+<div class="card-deck row-scrollable">
+    @foreach (var item in Model)
+    {
+        <div class="card col-scrollable">
+            <div class="card-header">
+
+                <div class="card-title">
+                    @Html.DisplayFor(modelItem => item.GoldNoteName)
+                </div>
+            </div>
+            <image src="/api/ImageModels/@(item.ImageAdress)" class="card-img-top" />
+            <div class="card-body　">
+                <div class="align-text-bottom">
+
+                    <div class="change">
+                        <label>お釣り ：</label> @(item.Change ? "有" : "無")
+                    </div>
+                    <div class="withdiscount">
+                        <label>割引併用：</label>@(item.WithDiscount ? "可" : "不可")
+                    </div>
+
+
+                    <div class="destination">
+                        <label>送り先 ：</label>@(item.Destination ? "ユニー" : "本部")
+                    </div>
+                    <div class="accounting">
+                        <label>会計時 ：</label>@Html.DisplayFor(modelItem => item.OnAccounting)
+                    </div>
+                </div>
+                <div class=" card-footer">
+
+                    <a class="btn-square" asp-action="Details" asp-route-id="@item.Id">詳細</a>
+                    @if (User.IsInRole("Editor") | User.IsInRole("Administrator"))
+                    {
+                        <a class="btn-square-warning" asp-action="Edit" asp-route-id="@item.Id">編集</a>
+                        <a class="btn-square-danger" asp-action="Delete" asp-route-id="@item.Id">削除</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts{
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+    <style>
+        .card {
+            max-width: 500px;
+        }
+
+        .sort.desc:after {
+            content: "▼";
+        }
+
+        .sort.asc:after {
+            content: "▲";
+        }
+
+        <style >
+        .row-scrollable {
+            overflow-x: auto !important;
+            white-space: nowrap !important;
+        }
+
+        .row-scrollable > .col-scrollable {
+            display: inline-block !important;
+            float: none !important;
+        }
+
+        .btn-square {
+            display: inline-block;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            background: #668ad8; /*ボタン色*/
+            color: #FFF;
+            border-bottom: solid 4px #627295;
+            border-radius: 3px;
+        }
+
+            .btn-square:active {
+                /*ボタンを押したとき*/
+                -webkit-transform: translateY(4px);
+                transform: translateY(4px); /*下に動く*/
+                border-bottom: none; /*線を消す*/
+            }
+
+        .btn-square-danger {
+            display: inline-block;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            background: #FF0000; /*ボタン色*/
+            color: #FFF;
+            border-bottom: solid 4px #800000;
+            border-radius: 3px;
+        }
+
+            .btn-square-danger:active {
+                /*ボタンを押したとき*/
+                -webkit-transform: translateY(4px);
+                transform: translateY(4px); /*下に動く*/
+                border-bottom: none; /*線を消す*/
+            }
+
+        .btn-square-warning {
+            display: inline-block;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            background: #ffd800; /*ボタン色*/
+            color: #000;
+            border-bottom: solid 4px #ddb200;
+            border-radius: 3px;
+        }
+
+            .btn-square-warning:active {
+                /*ボタンを押したとき*/
+                -webkit-transform: translateY(4px);
+                transform: translateY(4px); /*下に動く*/
+                border-bottom: none; /*線を消す*/
+            }
+    </style>
+}
+

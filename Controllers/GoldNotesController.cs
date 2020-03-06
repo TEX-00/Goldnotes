@@ -67,6 +67,21 @@ namespace Goldnote.Controllers
             return View(goldNote);
         }
 
+
+        [Authorize]
+        [Route("GoldNotes/Pictures")]
+        public async Task<IActionResult> Images()
+        {
+            var model = await _context.Goldnote.ToListAsync();
+            var model_count = model.Count;
+            var idNameDic = IdToName(_userManager);
+
+            var nm = model.Where(gn => gn.ImageAdress != null);
+            return View("ImageCards",nm);
+
+
+        }
+
 [Authorize(Roles ="Editor")]
         // GET: GoldNotes/Create
         public IActionResult Create()

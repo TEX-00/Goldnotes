@@ -9,102 +9,98 @@
 <p>
     @if (User.IsInRole("Editor"))
     {
-    <a asp-action="Create">新規作成</a>
+        <a asp-action="Create">新規作成</a>
     }
 </p>
-<table class="table" id="goldnotes">
-    <thead>
-        <tr>
-            <th class="sort" data-sort="name">
-                @Html.DisplayNameFor(model => model.GoldNoteName)
-            </th>
-            <th class="sort" data-sort="change">
-                @Html.DisplayNameFor(model => model.Change)
-            </th>
-            <th class="sort" data-sort="withdiscount">
-
-            @Html.DisplayNameFor(model=> model.WithDiscount)
-
-            </th>
-            <th class="sort" data-sort="destination">
-                @Html.DisplayNameFor(model => model.Destination)
-            </th>
-            <th class="sort" data-sort="accounting">
-                @Html.DisplayNameFor(model => model.OnAccounting)
-            </th>
-            <th class="sort" data-sort="creditmachine">
-                @Html.DisplayNameFor(model => model.CreditCardMachine)
-            </th>
-            <th class="sort" data-sort="sendingpaper">
-                @Html.DisplayNameFor(model => model.GoldNoteSendingPaper)
-            </th>
-            <th class="sort" data-sort="specialoptions">
-                @Html.DisplayNameFor(model => model.SpecialOptions)
-            </th>
-            <th class="sort" data-sort="editdate">
-                @Html.DisplayNameFor(model => model.EditDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EditerId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody class="list">
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-bordered table-striped" id="goldnotes">
+        <thead>
             <tr>
-                <td class="name">
-                    @Html.DisplayFor(modelItem => item.GoldNoteName)
-                </td>
-                <td class="change">
-                    @(item.Change ? "有" : "無")
-                </td>
-                <td class="withdiscount">
-                    @(item.WithDiscount ? "可":"不可")
-                </td>
+                <th class="sort" data-sort="name">
+                    @Html.DisplayNameFor(model => model.GoldNoteName)
+                </th>
+                <th class="sort" data-sort="change">
+                    @Html.DisplayNameFor(model => model.Change)
+                </th>
+                <th class="sort" data-sort="withdiscount">
 
+                    @Html.DisplayNameFor(model => model.WithDiscount)
 
-                <td class="destination">
-                    @(item.Destination ? "ユニー" : "本部")
-                </td>
-                <td class="accounting">
-                    @Html.DisplayFor(modelItem => item.OnAccounting)
-                </td>
-                <td class="creditmachine">
-                    @Html.DisplayFor(modelItem => item.CreditCardMachine)
-                </td>
-                <td class="sendingpaper">
-                    @Html.DisplayFor(modelItem => item.GoldNoteSendingPaper)
-                </td>
-                <td class="specialoptions">
-                    @Html.DisplayFor(modelItem => item.SpecialOptions)
-                </td>
-                <td class="editdate">
-                    @Html.DisplayFor(modelItem => item.EditDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EditerId)
-                </td>
-                <td>
-
-                    <a  class="btn-success" asp-action="Details" asp-route-id="@item.Id">詳細</a>
-                    @if (User.IsInRole("Editor") | User.IsInRole("Administrator"))
-                    {
-                    <a class="btn-warning" asp-action="Edit" asp-route-id="@item.Id">編集</a>
-                    <a class="btn-danger" asp-action="Delete" asp-route-id="@item.Id">削除</a>
-                    }</td>
+                </th>
+                <th class="sort" data-sort="destination">
+                    @Html.DisplayNameFor(model => model.Destination)
+                </th>
+                <th class="sort" data-sort="accounting">
+                    @Html.DisplayNameFor(model => model.OnAccounting)
+                </th>
+                <th class="sort" data-sort="creditmachine">
+                    @Html.DisplayNameFor(model => model.CreditCardMachine)
+                </th>
+                <th class="sort" data-sort="sendingpaper">
+                    @Html.DisplayNameFor(model => model.GoldNoteSendingPaper)
+                </th>
+                <th class="sort" data-sort="editdate">
+                    @Html.DisplayNameFor(model => model.EditDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EditerId)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody class="list">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="name">
+                        @Html.DisplayFor(modelItem => item.GoldNoteName)
+                    </td>
+                    <td class="change">
+                        @(item.Change ? "有" : "無")
+                    </td>
+                    <td class="withdiscount">
+                        @(item.WithDiscount ? "可" : "不可")
+                    </td>
 
+
+                    <td class="destination">
+                        @(item.Destination ? "ユニー" : "本部")
+                    </td>
+                    <td class="accounting">
+                        @Html.DisplayFor(modelItem => item.OnAccounting)
+                    </td>
+                    <td class="creditmachine">
+                        @Html.DisplayFor(modelItem => item.CreditCardMachine)
+                    </td>
+                    <td class="sendingpaper">
+                        @Html.DisplayFor(modelItem => item.GoldNoteSendingPaper)
+                    </td>
+                    <td class="editdate">
+                        @Html.DisplayFor(modelItem => item.EditDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EditerId)
+                    </td>
+                    <td>
+
+                        <a class="btn-square" asp-action="Details" asp-route-id="@item.Id">詳細</a>
+                        @if (User.IsInRole("Editor") | User.IsInRole("Administrator"))
+                        {
+                            <a class="btn-square-warning" asp-action="Edit" asp-route-id="@item.Id">編集</a>
+                            <a class="btn-square-danger" asp-action="Delete" asp-route-id="@item.Id">削除</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @section scripts{
     <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
     <script>
         var options = {
-            valueNames: ['name','withdiscount', 'change', 'destination', 'accounting', 'creditmachine', 'imgs','specialoptions', 'editdate']
+            valueNames: ['name', 'withdiscount', 'change', 'destination', 'accounting', 'creditmachine', 'imgs', 'specialoptions', 'editdate']
 
         };
 
@@ -120,5 +116,61 @@
         .sort.asc:after {
             content: "▲";
         }
+
+
+        .btn-square {
+            display: inline-block;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            background: #668ad8; /*ボタン色*/
+            color: #FFF;
+            border-bottom: solid 4px #627295;
+            border-radius: 3px;
+        }
+            .btn-square:active {
+                /*ボタンを押したとき*/
+                -webkit-transform: translateY(4px);
+                transform: translateY(4px); /*下に動く*/
+                border-bottom: none; /*線を消す*/
+            }
+
+        .btn-square-danger {
+            display: inline-block;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            background: #FF0000; /*ボタン色*/
+            color: #FFF;
+            border-bottom: solid 4px #800000;
+            border-radius: 3px;
+        }
+            .btn-square-danger:active {
+                /*ボタンを押したとき*/
+                -webkit-transform: translateY(4px);
+                transform: translateY(4px); /*下に動く*/
+                border-bottom: none; /*線を消す*/
+            }
+
+        .btn-square-warning {
+            display: inline-block;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            background: #ffd800; /*ボタン色*/
+            color: #000;
+            border-bottom: solid 4px #ddb200;
+            border-radius: 3px;
+        }
+            .btn-square-warning:active {
+                /*ボタンを押したとき*/
+                -webkit-transform: translateY(4px);
+                transform: translateY(4px); /*下に動く*/
+                border-bottom: none; /*線を消す*/
+            }
+
+
+
+
+
+
+
     </style>
 }
